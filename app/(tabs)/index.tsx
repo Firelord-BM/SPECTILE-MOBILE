@@ -1,98 +1,128 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { StatCard } from '@/components/cards/StatsCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { theme } from '@/constants/theme';
+import { useContactStore } from '@/store/useContactStore';
+import { router } from 'expo-router';
+import { Activity, DollarSign, MapPin, Package, Plus, Target, Users } from 'lucide-react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-export default function HomeScreen() {
+export default function DashboardScreen() {
+  const { loadContacts } = useContactStore();
+
+  useEffect(() => {
+    loadContacts();
+  }, []);
+
+  const quickActions = [
+    { icon: Plus, label: 'New Order', route: '/order-form' },
+    { icon: Users, label: 'Add Contact', route: '/contact-form' },
+    { icon: Activity, label: 'Log Activity', route: '/activity-form' },
+    { icon: MapPin, label: 'Route Plan', route: null },
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+    <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <ThemedText type="title" style={{ color: 'white' }}>
+          Sales Dashboard
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+        {/* Stats Grid */}
+        <View style={styles.statsGrid}>
+          <StatCard
+            title="Today's Sales"
+            value="KES 45,000"
+            icon={DollarSign}
+            color={theme.colors.success}
+          />
+          <StatCard
+            title="Monthly Target"
+            value="65%"
+            icon={Target}
+            color={theme.colors.primary}
+          />
+          <StatCard
+            title="Active Leads"
+            value="12"
+            icon={Users}
+            color={theme.colors.warning}
+          />
+          <StatCard
+            title="Pending Orders"
+            value="5"
+            icon={Package}
+            color={theme.colors.primary}
+          />
+        </View>
+
+        {/* Quick Actions */}
+        <ThemedText type="subtitle" style={styles.sectionTitle}>
+          Quick Actions
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View style={styles.quickActionsGrid}>
+          {quickActions.map((action, index) => (
+            <View
+              key={index}
+              style={styles.quickAction}
+              onTouchEnd={() => action.route && router.push(action.route as any)}
+            >
+              <action.icon size={28} color={theme.colors.primary} />
+              <ThemedText style={styles.quickActionLabel}>{action.label}</ThemedText>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    paddingTop: 60,
+  },
+  content: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: theme.spacing.md,
+    paddingBottom: 100,
+  },
+  statsGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
+  },
+  sectionTitle: {
+    marginBottom: theme.spacing.md,
+  },
+  quickActionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.md,
+  },
+  quickAction: {
+    width: '47%',
+    backgroundColor: theme.colors.card,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
     alignItems: 'center',
-    gap: 8,
+    gap: theme.spacing.sm,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  quickActionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: theme.colors.primary,
   },
 });

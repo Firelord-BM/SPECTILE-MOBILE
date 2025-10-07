@@ -5,28 +5,6 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
-
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
@@ -51,3 +29,48 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const theme = {
+  colors: {
+    primary: '#800020',
+    primaryLight: '#a0264d',
+    primaryDark: '#5a0016',
+    background: '#f8f9fa',
+    card: '#ffffff',
+    text: '#1a1a1a',
+    textLight: '#6c757d',
+    success: '#28a745',
+    warning: '#ffc107',
+    danger: '#dc3545',
+    border: '#dee2e6',
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+  },
+  borderRadius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+  },
+};
+
+export const Colors = {
+  light: {
+    tint: theme.colors.primary,
+    background: theme.colors.background,
+    card: theme.colors.card,
+    text: theme.colors.text,
+    border: theme.colors.border,
+  },
+  dark: {
+    tint: theme.colors.primaryLight,
+    background: '#1a1a1a',
+    card: '#2a2a2a',
+    text: '#ffffff',
+    border: '#444444',
+  },
+};

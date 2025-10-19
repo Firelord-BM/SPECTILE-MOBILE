@@ -1,13 +1,13 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { theme } from '@/constants/theme';
+import ContactDetailScreen from '@/screens/ClientDetailScreen';
 import { Contact, useContactStore } from '@/store/useContactStore';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { Mail, MapPin, Phone } from 'lucide-react-native';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-export default function ContactDetailScreen() {
+export default function ContactDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { getContactById } = useContactStore();
   const [contact, setContact] = useState<Contact | null>(null);
@@ -30,72 +30,25 @@ export default function ContactDetailScreen() {
   }
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: contact.name,
-          headerStyle: { backgroundColor: theme.colors.primary },
-          headerTintColor: 'white',
-        }}
-      />
-      <ThemedView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.content}>
-          {/* Location Info */}
-          <View style={styles.infoCard}>
-            <View style={styles.locationRow}>
-              <MapPin size={16} color={theme.colors.primary} />
-              <ThemedText style={styles.locationText}>
-                Location: {contact.location.latitude.toFixed(4)}, {contact.location.longitude.toFixed(4)}
-              </ThemedText>
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.actionButtons}>
-              <TouchableOpacity
-                style={styles.callButton}
-                onPress={() => Linking.openURL(`tel:${contact.phone}`)}
-              >
-                <Phone size={16} color="white" />
-                <ThemedText style={styles.buttonText}>Call</ThemedText>
-              </TouchableOpacity>
-
-              {contact.email && (
-                <TouchableOpacity
-                  style={styles.emailButton}
-                  onPress={() => Linking.openURL(`mailto:${contact.email}`)}
-                >
-                  <Mail size={16} color={theme.colors.primary} />
-                  <ThemedText style={styles.emailButtonText}>Email</ThemedText>
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-
-          {/* Quick Actions */}
-          <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
-          <View style={styles.quickActions}>
-            <TouchableOpacity
-              style={styles.primaryAction}
-              onPress={() => router.push('/order-form')}
-            >
-              <ThemedText style={styles.buttonText}>Create Order</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.secondaryAction}
-              onPress={() => router.push('/activity-form')}
-            >
-              <ThemedText style={styles.secondaryActionText}>Log Activity</ThemedText>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </ThemedView>
-    </>
+    <ThemedView style={styles.container}>
+       <View style={styles.header}>
+                  <ThemedText type="title" style={{ color: 'white' }}>
+                    Contact Details
+                  </ThemedText>
+                </View>
+                <ContactDetailScreen/>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    paddingTop: 40,
   },
   content: {
     padding: theme.spacing.md,

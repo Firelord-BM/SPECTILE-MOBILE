@@ -1,11 +1,12 @@
+import { FloatingActionButton } from '@/components/common/FloatingActionButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { theme } from '@/constants/theme';
+import ClientsScreen from '@/screens/ClientScreen';
 import { useContactStore } from '@/store/useContactStore';
 import { router } from 'expo-router';
-import { Clock, MapPin, Phone, Plus, Search } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function ContactsScreen() {
   const { contacts, loadContacts } = useContactStore();
@@ -15,9 +16,10 @@ export default function ContactsScreen() {
     loadContacts();
   }, []);
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.phone.includes(searchQuery)
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contact.phone.includes(searchQuery)
   );
 
   return (
@@ -27,65 +29,11 @@ export default function ContactsScreen() {
           Contacts
         </ThemedText>
       </View>
-
-      <View style={styles.content}>
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
-            <Search size={18} color={theme.colors.textLight} style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search contacts..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholderTextColor={theme.colors.textLight}
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push('/contact-form')}
-          >
-            <Plus size={18} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Contact List */}
-        <ScrollView contentContainerStyle={styles.listContainer}>
-          {filteredContacts.map(contact => (
-            <TouchableOpacity
-              key={contact.id}
-              style={styles.contactCard}
-              onPress={() => router.push({
-                pathname: '/contact-detail',
-                params: { id: contact.syncId }
-              })}
-            >
-              <View style={styles.contactHeader}>
-                <View style={styles.contactInfo}>
-                  <ThemedText style={styles.contactName}>{contact.name}</ThemedText>
-                  <View style={[
-                    styles.stageBadge,
-                    { backgroundColor: contact.stage === 'Customer' ? theme.colors.success : theme.colors.warning }
-                  ]}>
-                    <ThemedText style={styles.stageText}>{contact.stage}</ThemedText>
-                  </View>
-                </View>
-                <MapPin size={18} color={theme.colors.primary} />
-              </View>
-              <View style={styles.contactDetails}>
-                <View style={styles.detailRow}>
-                  <Phone size={14} color={theme.colors.textLight} />
-                  <ThemedText style={styles.detailText}>{contact.phone}</ThemedText>
-                </View>
-                <View style={styles.detailRow}>
-                  <Clock size={14} color={theme.colors.textLight} />
-                  <ThemedText style={styles.detailText}>{contact.lastActivity}</ThemedText>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+    <ClientsScreen/>
+      <FloatingActionButton
+        icon="person-add"
+        onPress={() => router.push('/register-client')}
+      />
     </ThemedView>
   );
 }
@@ -97,19 +45,16 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary,
     padding: theme.spacing.md,
-    paddingTop: 60,
+    paddingTop: 40,
   },
   content: {
     flex: 1,
     padding: theme.spacing.md,
   },
   searchContainer: {
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
     marginBottom: theme.spacing.md,
   },
   searchInputContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.colors.card,
@@ -126,15 +71,19 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     fontSize: 14,
   },
-  addButton: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.sm,
-    padding: theme.spacing.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   listContainer: {
     paddingBottom: 100,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: theme.colors.textLight,
+    textAlign: 'center',
   },
   contactCard: {
     backgroundColor: theme.colors.card,

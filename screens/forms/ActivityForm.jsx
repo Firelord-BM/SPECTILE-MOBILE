@@ -1,3 +1,4 @@
+import { theme } from '@/constants/theme';
 import { Picker } from '@react-native-picker/picker';
 import { CheckCircle, MapPin, ShoppingCart } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
@@ -5,8 +6,6 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { useActivityStore } from '../../store/useActivityStore';
 import { useContactStore } from '../../store/useContactStore';
 import { getCurrentLocation } from '../../utils/location';
-import { theme } from '../../utils/theme';
-
 export default function ActivityForm({ navigation }) {
   const { addActivity } = useActivityStore();
   const { contacts } = useContactStore();
